@@ -1,0 +1,37 @@
+pipeline {
+     agent any
+
+     tools {
+        maven 'maven-jenkins'
+     }
+     parameters {
+          string(name: 'staging_server', defaultValue: '15.207.114.149', description: 'Remote Staging Server')
+     }
+
+stages{
+        stage('Bulid'){
+            stops {
+                sh 'mvn clean package'
+            }
+            post {
+                sucess {
+                    echo 'Arching the artifacts'
+                    archiveArtifacts artfacts: '**/target/*.war       
+                }
+            }
+        }
+
+        stage ('Deployments'){
+            parallel{
+                stage ("Deploy to Staging"){
+                    steps {
+                        sh "scp -v -o StrictHostkeyChecking=no **/*.war root@${params.string_server}:/opt/tomcat/weapps/"
+                    }
+                }
+            }
+        }
+   }
+}
+   
+
+   
