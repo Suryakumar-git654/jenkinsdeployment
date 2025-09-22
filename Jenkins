@@ -16,7 +16,7 @@ stages{
             post {
                 sucess {
                     echo 'Arching the artifacts'
-                    archiveArtifacts artfacts: '**/target/*.war       
+                    archiveArtifacts artfacts: '**/target/*.war'       
                 }
             }
         }
